@@ -6,12 +6,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [react(), VitePWA({
     manifest: {
-      // name: 'React App',
-      // short_name: 'React App',
-      // start_url: '/',
-      // display: 'standalone',
-      // background_color: '#ffffff',
-      // description: 'Web site created using create-react-app',
       icons: [
         {
           src: '/icon-192x192.png',
@@ -19,6 +13,24 @@ export default defineConfig({
           type: 'image/png'
         }
       ]
+    },
+    workbox: {
+      runtimeCaching: [{
+        urlPattern: ({ url }) => {
+          return url.pathname.startsWith('/api')
+        },
+        handler: 'CacheFirst',
+        // handler: 'NetworkFirst',
+        options: {
+          cacheName: 'api-cache',
+          // expiration: {
+          //   maxAgeSeconds: 60 * 60 * 24 * 7
+          // },
+          cacheableResponse: {
+            statuses: [0, 200]
+          }
+        }
+      }]
     }
   })]
 })
